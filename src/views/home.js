@@ -10,17 +10,56 @@ import './home.css';
 
 
 const Form = ({ setIsOpen }) => {
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+    
+    // Extract form data
+    const formData = new FormData(e.target);
+    const patientData = {
+      name: formData.get('name'),
+      age: +formData.get('age'),
+      gender: formData.get('gender'),
+      contact: formData.get('contact'),
+      test: formData.get('test'),
+      medical: formData.get('medical_record'),
+      diagnosis: formData.get('diagnosis')
+    };
+  
+    // Perform action with the form data
+    // For example, you can send it to a server using fetch or axios
+    fetch('http://localhost:8000/patients', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(patientData)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
+      // Handle successful form submission
+      // For example, close the form or show a success message
+      setIsOpen(false); // Close the form
+    })
+    .catch(error => {
+      // Handle errors
+      console.error('Error submitting form:', error);
+      // Optionally, display an error message to the user
+    });
+  };
+  
   const handleCancelClick = (e) => {
     e.preventDefault(); // Prevent default form submission behavior
     setIsOpen(false);
   };
   return (
-    <div id="form" className='absolute inset-0 bg-red-400' style={{ backgroundColor: "white", width: "100vw", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute" }}>
+    <div id="form" className='absolute inset-0 bg-red-400' style={{ backgroundColor: "white", width: "100vw", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", position: "absolute" }} onSubmit={handleSubmit}>
       <form action="" style={{ display: "block" }}>
         <label htmlFor="name" style={{ display: "block" }}>Patient Name </label>
-        <input type="text" style={{ display: "block" }} required/>
+        <input type="text" name="name" id="name" style={{ display: "block" }} required/>
         <label htmlFor="age" style={{ display: "block" }}>Age</label>
-        <input type="text" style={{ display: "block" }} required/>
+        <input type="text" name="age" id="age" style={{ display: "block" }} required/>
         <label htmlFor="gender" style={{ display: "block" }}>Gender</label>
         <input type="text" name="gender" id="gender" style={{ display: "block" }} required/>
         <label htmlFor="contact" style={{ display: "block" }}>Contact No.</label>
@@ -29,8 +68,8 @@ const Form = ({ setIsOpen }) => {
         <input type="text" name="test" id="test" style={{ display: "block" }} required/>
         <label htmlFor="medical_record" style={{ display: "block" }}>Medical Record</label>
         <input type="text" name="medical_record" id="medical_record" style={{ display: "block" }} required/>
-        <label htmlFor="dignosis" style={{ display: "block" }}>Dignosis</label>
-        <input type="text" name="dignosis" id="dignosis" style={{ display: "block" }} required/>
+        <label htmlFor="diagnosis" style={{ display: "block" }}>Dignosis</label>
+        <input type="text" name="diagnosis" id="diagnosis" style={{ display: "block" }} required/>
         <div style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
           <button style={{backgroundColor: "gray", color: "white" }}>
             Save

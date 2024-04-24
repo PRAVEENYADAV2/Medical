@@ -1,11 +1,23 @@
 // Import necessary modules
 const express = require('express');
 const mongoose = require('mongoose');
-
+const cors = require("cors")
 // Create Express app
 const app = express();
 app.use(express.json());
+app.use(cors());
+app.use((req, res, next) => {
+    const allowedOrigins = ['http://localhost:8000'];
+    const origin = req.headers.origin;
 
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    
+    res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://hp15spraveen:h1SZ02sneNSDV0Ej@cluster0.wsxihy3.mongodb.net/');
 const db = mongoose.connection;
@@ -79,7 +91,7 @@ app.get('/', (req, res) => {
 })
 
 // Start server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
